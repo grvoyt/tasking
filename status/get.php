@@ -3,8 +3,10 @@ ini_set('error_reporting', E_ALL);
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 
-if (is_file('./config.php')) {
-	require_once('./config.php');
+$config = dirname(dirname(__FILE__)).DIRECTORY_SEPARATOR.'config.php';
+
+if (is_file($config)) {
+	require_once($config);
 }
 require_once(DIR_SYSTEM . 'startup.php');
 
@@ -39,4 +41,9 @@ class getInfo {
 	    header('Status: 200');
     	return json_encode(get_object_vars($this));
     }
+}
+
+if($_SERVER['REQUEST_METHOD'] == 'GET') {
+    $tasks = new getInfo();
+    echo $tasks->getTasks()->toJson();
 }
