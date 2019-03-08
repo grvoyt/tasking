@@ -49,7 +49,7 @@ function exec_bg_script($script, array $args = [], $escape = true)
 <section>
     <div class="container">
         <div class="row">
-            <div class="col-xs-12 col-md-8">
+            <div class="col-12 col-md-8">
                 <div class="jumbotron">
                     <div class="page-header"><h1>Запуск скрипта</h1></div>
                     
@@ -58,7 +58,7 @@ function exec_bg_script($script, array $args = [], $escape = true)
                     </form>
                 </div>
             </div>
-            <div class="col-xs-12 col-md-4">
+            <div class="col-12 col-md-4">
                 <div class="messages">
                     <?php if ($message) { ?>
                         <div class="alert alert-dismissible alert-success">
@@ -67,6 +67,36 @@ function exec_bg_script($script, array $args = [], $escape = true)
                         </div>
                     <?php } ?>
                 </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-12">
+                <table class="table table-hover">
+  <thead>
+    <tr>
+      <th scope="col">Task ID</th>
+      <th scope="col">Status</th>
+      <th scope="col">Error</th>
+      <th scope="col">Datetime</th>
+    </tr>
+  </thead>
+  <tbody id="tbody">
+
+    <tr>
+      <th scope="row">Default</th>
+      <td>Column content</td>
+      <td>Column content</td>
+      <td>Column content</td>
+    </tr>
+    <tr class="table-danger">
+      <th scope="row">Danger</th>
+      <td>Column content</td>
+      <td>Column content</td>
+      <td>Column content</td>
+    </tr>
+   
+  </tbody>
+</table> 
             </div>
         </div>
     </div>
@@ -78,21 +108,38 @@ function exec_bg_script($script, array $args = [], $escape = true)
 </style>
 <script>
 $(document).on('click','.alert .close', function() {$(this).parent().fadeOut().remove()});
-var count = 0;
+
 var checkStatus = function() {
     $.ajax({
         url: '',
         type:'post',
         success: function(res) {
-            console.log(res,res.id);
+            if(res.tasks && res.tasks.length ==0) {
+                clearInterval(timer);
+                return false;
+            }
+            var status = res.status;
+            var html = '';
+            res.tasks.forEach(function(it) {
+                var classError = (it.status == 2) ? 'table-danger' : '';
+                var textError = it.error ? it.error : '';
+                html += '<tr class="'+classError+'">'
+                  +'<th scope="row">'+it.id+'</th>'
+                  +'<td>'+status[it.status]+'</td>'
+                  +'<td>'+textError+'</td>'
+                  +'<td>'+it.datetime+'</td>'
+                +'</tr>';
+            });
+            $('#tbody').empty().append(html);
         }
     })
-    $('.messages').append('<div class="alert alert-dismissible alert-success"><button type="button" class="close" data-dismiss="alert">&times;</button><strong>Сообщение '+count+'</strong></div>');
-    count++;
-    if(count>2) clearInterval(timer);
+    $('.messages').show().append('<div class="alert alert-dismissible alert-success"><button type="button" class="close" data-dismiss="alert">&times;</button><strong>Обновлено</strong></div>');
+    setTimeout(function() {
+        $('.messages').fadeOut(500).empty();
+    },10*1000);
 
 }
-var timer = setInterval(checkStatus,2000);
+var timer = setInterval(checkStatus,30*1000);
 
 
 </script>

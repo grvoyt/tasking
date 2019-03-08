@@ -9,7 +9,7 @@ if (is_file('./config.php')) {
 require_once(DIR_SYSTEM . 'startup.php');
 
 class getInfo {
-    protected $response;
+    protected $tasks;
     protected $status = ['успешно','в процессе','ошибка'];
     public function __construct()
     {
@@ -19,7 +19,7 @@ class getInfo {
 	public function getTasks() {
 		$db = $this->getDB();
 	    $query = $db->query("SELECT * FROM " . DB_PREFIX . "script_tasks WHERE status > 0");
-	    $this->response = $query->rows;
+	    $this->tasks = $query->rows;
 	    return $this;
 	}
 
