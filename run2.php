@@ -77,24 +77,10 @@ function exec_bg_script($script, array $args = [], $escape = true)
       <th scope="col">Task ID</th>
       <th scope="col">Status</th>
       <th scope="col">Error</th>
-      <th scope="col">Datetime</th>
+      <th scope="col">Время запуска</th>
     </tr>
   </thead>
-  <tbody id="tbody">
-
-    <tr>
-      <th scope="row">Default</th>
-      <td>Column content</td>
-      <td>Column content</td>
-      <td>Column content</td>
-    </tr>
-    <tr class="table-danger">
-      <th scope="row">Danger</th>
-      <td>Column content</td>
-      <td>Column content</td>
-      <td>Column content</td>
-    </tr>
-   
+  <tbody id="tbody">   
   </tbody>
 </table> 
             </div>
