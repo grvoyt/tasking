@@ -108,7 +108,7 @@ function exec_bg_script($script, array $args = [], $escape = true)
 </style>
 <script>
 $(document).on('click','.alert .close', function() {$(this).parent().fadeOut().remove()});
-
+checkStatus();
 var checkStatus = function() {
     $.ajax({
         url: '',
@@ -139,7 +139,7 @@ var checkStatus = function() {
     },10*1000);
 
 }
-var timer = setInterval(checkStatus,30*1000);
+var timer = setInterval(checkStatus,15*1000);
 
 
 </script>
