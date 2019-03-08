@@ -78,6 +78,7 @@ function exec_bg_script($script, array $args = [], $escape = true)
       <th scope="col">Status</th>
       <th scope="col">Error</th>
       <th scope="col">Время запуска</th>
+      <th scope="col">Обновлено</th>
     </tr>
   </thead>
   <tbody id="tbody">   
@@ -102,10 +103,13 @@ var checkStatus = function() {
         success: function(res) {
             if(res.tasks && res.tasks.length ==0) {
                 clearInterval(timer);
+                $('#tbody').empty();
+                showMessage('Задач нет','alert-warning');
                 return false;
             }
             var status = res.status;
             var html = '';
+            var currTime = new Date().toLocaleString();
             res.tasks.forEach(function(it) {
                 var classError = (it.status == 2) ? 'table-danger' : '';
                 var textError = it.error ? it.error : '';
@@ -113,20 +117,26 @@ var checkStatus = function() {
                   +'<th scope="row">'+it.id+'</th>'
                   +'<td>'+status[it.status]+'</td>'
                   +'<td>'+textError+'</td>'
-                  +'<td>'+it.datetime+'</td>'
+                  +'<td>'+new Date(it.datetime).toLocaleString()+'</td>'
+                  +'<td>'+currTime+'</td>'
                 +'</tr>';
             });
             $('#tbody').empty().append(html);
+            showMessage('Обновлено');
         }
     })
-    $('.messages').show().append('<div class="alert alert-dismissible alert-success"><button type="button" class="close" data-dismiss="alert">&times;</button><strong>Обновлено</strong></div>');
-    setTimeout(function() {
-        $('.messages').fadeOut(500).empty();
-    },10*1000);
+    
 
 }
 checkStatus();
 var timer = setInterval(checkStatus,15*1000);
+
+function showMessage(text,alert='alert-success') {
+    $('.messages').append('<div class="alert alert-dismissible '+alert+'"><button type="button" class="close" data-dismiss="alert">&times;</button><strong>'+text+'</strong></div>').fadeIn(500);
+    setTimeout(function() {
+        $('.messages').fadeOut(500).empty();
+    },10*1000);
+}
 </script>
 </body>
 </html>
