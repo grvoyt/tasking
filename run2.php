@@ -11,6 +11,7 @@ $message = '';
 if($_SERVER['REQUEST_METHOD'] == 'POST') {
     exec_bg_script('status/script.php', ['time'=>1,'token'=>md5('istylespb.ru')]);
     $message = 'Скрипт запущен';
+    header('Location: https://istylespb.ru/run2.php');
 }
 //
 
@@ -38,6 +39,8 @@ function exec_bg_script($script, array $args = [], $escape = true)
 <head>
     <meta charset="UTF-8">
     <title>Document</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
 
     <link rel="stylesheet" type="text/css" href="//bootswatch.com/4/united/bootstrap.min.css">
     <script
@@ -71,7 +74,11 @@ function exec_bg_script($script, array $args = [], $escape = true)
         </div>
         <div class="row">
             <div class="col-12">
-                <table class="table table-hover">
+                <div id="tbody">
+                    
+                </div>
+                
+                <!--<table class="table table-hover">
   <thead>
     <tr>
       <th scope="col">Task ID</th>
@@ -83,7 +90,7 @@ function exec_bg_script($script, array $args = [], $escape = true)
   </thead>
   <tbody id="tbody">   
   </tbody>
-</table> 
+</table> -->
             </div>
         </div>
     </div>
@@ -111,15 +118,26 @@ var checkStatus = function() {
             var html = '';
             var currTime = new Date().toLocaleString();
             res.tasks.forEach(function(it) {
-                var classError = (it.status == 2) ? 'table-danger' : '';
+                var classError = (it.status == 2) ? 'border-danger' : '';
                 var textError = it.error ? it.error : '';
-                html += '<tr class="'+classError+'">'
+                /*html += '<tr class="'+classError+'">'
                   +'<th scope="row">'+it.id+'</th>'
                   +'<td>'+status[it.status]+'</td>'
                   +'<td>'+textError+'</td>'
                   +'<td>'+new Date(it.date_start).toLocaleString()+'</td>'
                   +'<td>'+currTime+'</td>'
-                +'</tr>';
+                +'</tr>';*/
+
+                html += '<div class="card mb-3 '+classError+'">'
+                  +'<h3 class="card-header">Task '+it.id+'</h3>'
+                  +'<div class="card-body">'
+                    +'<h5 class="card-title ">Статус: <span class="text-success">'+status[it.status]+'</span></h5>'
+                  +'</div>'  
+                  +'<ul class="list-group list-group-flush">'
+                    +'<li class="list-group-item">Время запуска: '+new Date(it.date_start).toLocaleString()+'</li>'
+                    +'<li class="list-group-item">Обновлено: '+currTime+'</li>'
+                  +'</ul>'
+                  +'</div>';
             });
             $('#tbody').empty().append(html);
             showMessage('Обновлено');
