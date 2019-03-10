@@ -18,6 +18,8 @@ if(md5('istylespb.ru') !== $params['token']) die('token_denied');
 //таймаут запуска
 if(isset($params['time'])) sleep( (int)$params['time'] );
 
+//для sheets 
+$_SERVER['DOCUMENT_ROOT'] = '/var/www/istylespb/data/www/istylespb.ru';
 
 //пабота самого скрипта
 ini_set('error_reporting', E_ALL);
@@ -31,6 +33,9 @@ if (is_file($config)) {
 }
 require_once(DIR_SYSTEM . 'startup.php');
 require_once DIR_SYSTEM . '/sheet.php';
+
+//проверка работающих тасков
+if(checkTaskActive()) exit;
 
 //Пишем таск в БД
 $taskId = startTask();
@@ -62,7 +67,7 @@ try {
     $sheet->clear();
     $sheet->insertThree($datas);
 } catch(\Exception $e) {
-    errorTask($taskId,$e->getMessage());
+    errorTask($taskId,[$e->getLine(),$e->getFile(),$e->getMessage()],$e->getTrace());
     die;
 }
 
@@ -87,7 +92,7 @@ try {
         }
     } 
 } catch(\Exception $e) {
-    errorTask($taskId,$e->getMessage());
+    errorTask($taskId,[$e->getLine(),$e->getFile(),$e->getMessage()],$e->getTrace());
     die;
 }
 
@@ -112,7 +117,7 @@ try {
         }
     }
 } catch(\Exception $e) {
-    errorTask($taskId,$e->getMessage());
+    errorTask($taskId,[$e->getLine(),$e->getFile(),$e->getMessage()],$e->getTrace());
     die;
 }
 
@@ -154,20 +159,33 @@ function db(){
 
 function startTask() {
     $db = db();
-    $query = $db->query("INSERT INTO " . DB_PREFIX . "script_tasks (`status`) VALUES (1)");
+    $query = $db->query("INSERT INTO " . DB_PREFIX . "script_tasks (status,date_start) VALUES (1,CURRENT_TIME())");
     return $db->getLastId();
 }
 
-function errorTask($taskId, string $error='') {
+function errorTask($taskId, array $error=[],$file) {
     $db = db();
-    $query = $db->query("UPDATE " . DB_PREFIX . "script_tasks SET status=2, error ='".(string)$error."' WHERE id='".$taskId."'");
+    errorToFile($file);
+    $query = $db->query("UPDATE " . DB_PREFIX . "script_tasks SET status=2, error ='".implode(':',$error)."' WHERE id='".$taskId."'");
     return $query;
 }
 
 function endTask($taskId) {
     $db = db();
-    $query = $db->query("UPDATE " . DB_PREFIX . "script_tasks SET status=0 WHERE id='".$taskId."'");
+    $query = $db->query("UPDATE " . DB_PREFIX . "script_tasks SET status=0,date_end=CURRENT_TIME() WHERE id='".$taskId."'");
     return $query;
+}
+
+function errorToFile($file) {
+    $error_file = dirname(__FILE__).DIRECTORY_SEPARATOR.'log.txt';
+    $msg = date('d/m/Y H:i').":".json_encode($file).PHP_EOL;
+    file_put_contents($error_file,$msg,FILE_APPEND);
+}
+
+function checkTaskActive() {
+    $db = db();
+    $query = $db->query("SELECT * FROM " . DB_PREFIX . "script_tasks WHERE status=1");
+    return ($query->num_rows > 0) ? 1 : 0;
 }
 
 ?>

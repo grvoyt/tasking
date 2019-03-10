@@ -117,7 +117,7 @@ var checkStatus = function() {
                   +'<th scope="row">'+it.id+'</th>'
                   +'<td>'+status[it.status]+'</td>'
                   +'<td>'+textError+'</td>'
-                  +'<td>'+new Date(it.datetime).toLocaleString()+'</td>'
+                  +'<td>'+new Date(it.date_start).toLocaleString()+'</td>'
                   +'<td>'+currTime+'</td>'
                 +'</tr>';
             });

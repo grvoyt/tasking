@@ -25,6 +25,13 @@ class getInfo {
 	    return $this;
 	}
 
+	public function getTasksAll() {
+		$db = $this->getDB();
+	    $query = $db->query("SELECT * FROM " . DB_PREFIX . "script_tasks");
+	    $this->tasks = $query->rows;
+	    return $this;
+	}
+
     protected function getDB() {
     	return new db(DB_DRIVER, DB_HOSTNAME, DB_USERNAME, DB_PASSWORD, DB_DATABASE, DB_PORT, DB_PREFIX);
     }
