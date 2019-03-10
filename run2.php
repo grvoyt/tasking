@@ -101,6 +101,7 @@ var checkStatus = function() {
                 return false;
             }
             var status = res.status;
+            var type = res.types;
             var html = '';
             var currTime = new Date().toLocaleString();
             res.tasks.forEach(function(it) {
@@ -114,6 +115,7 @@ var checkStatus = function() {
                   +'<h3 class="card-header">Task '+it.id+'</h3>'
                   +'<div class="card-body">'
                     +'<h5 class="card-title ">Статус: <span class="text-'+errorLabel+'">'+status[it.status]+'</span></h5>'
+                    +'<p class="card-text">Тип: '+type[it.type]+'</p>'
                   +'<p class="card-text">'+textError+'</p>'
                     +'</div>'
                   +'<ul class="list-group list-group-flush">'

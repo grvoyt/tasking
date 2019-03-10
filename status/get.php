@@ -13,6 +13,7 @@ require_once(DIR_SYSTEM . 'startup.php');
 class getInfo {
     protected $tasks;
     protected $status = ['успешно','в процессе','ошибка'];
+    protected $types = ['auto','client'];
     public function __construct()
     {
         return $this;
