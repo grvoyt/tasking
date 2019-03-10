@@ -77,20 +77,6 @@ function exec_bg_script($script, array $args = [], $escape = true)
                 <div id="tbody">
                     
                 </div>
-                
-                <!--<table class="table table-hover">
-  <thead>
-    <tr>
-      <th scope="col">Task ID</th>
-      <th scope="col">Status</th>
-      <th scope="col">Error</th>
-      <th scope="col">Время запуска</th>
-      <th scope="col">Обновлено</th>
-    </tr>
-  </thead>
-  <tbody id="tbody">   
-  </tbody>
-</table> -->
             </div>
         </div>
     </div>
@@ -111,7 +97,7 @@ var checkStatus = function() {
             if(res.tasks && res.tasks.length ==0) {
                 clearInterval(timer);
                 $('#tbody').empty();
-                showMessage('Задач нет','alert-warning');
+                showMessage('Импорт завершен','alert-success');
                 return false;
             }
             var status = res.status;
@@ -119,22 +105,19 @@ var checkStatus = function() {
             var currTime = new Date().toLocaleString();
             res.tasks.forEach(function(it) {
                 var classError = (it.status == 2) ? 'border-danger' : '';
+                var errorLabel = (it.status == 2) ? 'danger' : 'success';
                 var textError = it.error ? it.error : '';
-                /*html += '<tr class="'+classError+'">'
-                  +'<th scope="row">'+it.id+'</th>'
-                  +'<td>'+status[it.status]+'</td>'
-                  +'<td>'+textError+'</td>'
-                  +'<td>'+new Date(it.date_start).toLocaleString()+'</td>'
-                  +'<td>'+currTime+'</td>'
-                +'</tr>';*/
+                var date_start = new Date(it.date_start);
+                date_start.setHours(date_start.getHours()+2);
 
                 html += '<div class="card mb-3 '+classError+'">'
                   +'<h3 class="card-header">Task '+it.id+'</h3>'
                   +'<div class="card-body">'
-                    +'<h5 class="card-title ">Статус: <span class="text-success">'+status[it.status]+'</span></h5>'
-                  +'</div>'  
+                    +'<h5 class="card-title ">Статус: <span class="text-'+errorLabel+'">'+status[it.status]+'</span></h5>'
+                  +'<p class="card-text">'+textError+'</p>'
+                    +'</div>'
                   +'<ul class="list-group list-group-flush">'
-                    +'<li class="list-group-item">Время запуска: '+new Date(it.date_start).toLocaleString()+'</li>'
+                    +'<li class="list-group-item">Время запуска: '+date_start.toLocaleString()+'</li>'
                     +'<li class="list-group-item">Обновлено: '+currTime+'</li>'
                   +'</ul>'
                   +'</div>';
@@ -149,7 +132,7 @@ var checkStatus = function() {
 checkStatus();
 var timer = setInterval(checkStatus,15*1000);
 
-function showMessage(text,alert='alert-success') {
+function showMessage(text,alert='alert-info') {
     $('.messages').append('<div class="alert alert-dismissible '+alert+'"><button type="button" class="close" data-dismiss="alert">&times;</button><strong>'+text+'</strong></div>').fadeIn(500);
     setTimeout(function() {
         $('.messages').fadeOut(500).empty();
