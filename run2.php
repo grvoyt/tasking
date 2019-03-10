@@ -9,7 +9,7 @@ if( isset($_SERVER['HTTP_X_REQUESTED_WITH']) && !empty($_SERVER['HTTP_X_REQUESTE
 //сам запуск скрипта
 $message = '';
 if($_SERVER['REQUEST_METHOD'] == 'POST') {
-    exec_bg_script('status/script.php', ['time'=>2,'token'=>md5('istylespb.ru')]);
+    exec_bg_script('status/script.php', ['time'=>1,'token'=>md5('istylespb.ru')]);
     $message = 'Скрипт запущен';
 }
 //
