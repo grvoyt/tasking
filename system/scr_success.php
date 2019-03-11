@@ -100,7 +100,7 @@ try {
         }
         
         $data_order = array(
-            "order_id"          => (int)$this->session->data['order_id'],
+            "order_id"          => (int)$params['order_id'],
             "date_added"        => date('d.m.Y'),
             "name"              => $v['name'],
             "sku"               => $v['sku'],
