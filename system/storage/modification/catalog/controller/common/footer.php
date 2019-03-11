@@ -119,10 +119,10 @@ class ControllerCommonFooter extends Controller {
 	}
         
         public function updateTable(){
-            ignore_user_abort(true);
+            ignore_user_abort(true);/*
             if($this->request->post['res']){
                 require_once DIR_SYSTEM . '/run2.php';
-            }
+            }*/
             unset($this->session->data['sheet']);
             $this->response->addHeader('Content-Type: application/json');
             $this->response->setOutput(json_encode($json));
