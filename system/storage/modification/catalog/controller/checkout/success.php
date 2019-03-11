@@ -122,6 +122,8 @@ class ControllerCheckoutSuccess extends Controller {
                             );
 
                             $sheet->insert($data_order);
+                            //запускаем пересчет через 4 секунды
+                            $this->exec_bg_script(['time'=>4,'token'=>md5('istylespb.ru')]);
                         }
                         
 			unset($this->session->data['shipping_method']);
@@ -183,5 +185,21 @@ class ControllerCheckoutSuccess extends Controller {
 		$data['testio'] = 'sdfsdf';
 		$this->response->setOutput($this->load->view('common/success', $data));
                 
+	}
+
+	public function exec_bg_script(array $args = [], $escape = true)
+	{
+	    $script = '/var/www/istylespb/data/www/istylespb.ru/status/script.php';
+	    
+	    if (($file = realpath($script)) === false) {
+	        print_r('[exec_bg_script] File ' . $script . ' not found!');
+	        return false;
+	    }
+	    array_walk($args, function(&$value, $key) use($escape) {
+	        $value = $escape ? $key . '=' . escapeshellarg($value) : $key . '=' . $value;
+	    });
+
+	    $command = sprintf('php %s %s', $file, implode(' ', $args)) . " > /dev/null &";
+	    exec($command);
 	}
 }
