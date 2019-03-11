@@ -6,8 +6,8 @@ class ControllerCheckoutSuccess extends Controller {
                 $this->load->model('checkout/order');
                 $this->load->model('catalog/product');
                 $this->load->model('checkout/sheet');
-                require_once DIR_SYSTEM . '/sheet.php';
-                $sheet = new sheet();
+                /*require_once DIR_SYSTEM . '/sheet.php';
+                $sheet = new sheet();*/
                 
 		if (isset($this->session->data['order_id'])) {
 
