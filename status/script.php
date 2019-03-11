@@ -21,6 +21,10 @@ if(isset($params['time'])) sleep( (int)$params['time'] );
 //тип запуска
 $type = isset($params['type']) ? $params['type'] : 1;
 
+
+//лог
+errorToFile(['msg'=>'scr:init','params' => $params]);
+
 //для sheets 
 $_SERVER['DOCUMENT_ROOT'] = '/var/www/istylespb/data/www/istylespb.ru';
 
@@ -34,8 +38,14 @@ require_once('/var/www/istylespb/data/www/istylespb.ru/system/startup.php');
 require_once('/var/www/istylespb/data/www/istylespb.ru/system/sheet.php');
 
 //проверка работающих тасков
-if(checkTaskActive()) exit;
-
+if($type) {
+    if(checkTaskActive()) exit;
+} else {
+    while(checkTaskActive()) {
+        sleep(29);
+    }
+}
+errorToFile(['msg'=>'scr:started','params' => $params]);
 //Пишем таск в БД
 $taskId = startTask();
 
@@ -122,6 +132,7 @@ try {
 
 //последний этап от правка успешного выполнения таску
 endTask($taskId);
+errorToFile(['msg'=>'scr:end','params' => $params,'taskId'=>$taskId]);
 die;
 
 
@@ -158,7 +169,7 @@ function db(){
 
 function startTask() {
     $db = db();
-    $query = $db->query("INSERT INTO " . DB_PREFIX . "script_tasks (type,status,date_start) VALUES (".$type.",1,CURRENT_TIME())");
+    $query = $db->query("INSERT INTO " . DB_PREFIX . "script_tasks (type,status,date_start) VALUES (".(int)$type.",1,CURRENT_TIME())");
     return $db->getLastId();
 }
 
