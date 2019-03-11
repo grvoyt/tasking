@@ -3,12 +3,8 @@ ini_set('error_reporting', E_ALL);
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 
-$config = dirname(dirname(__FILE__)).DIRECTORY_SEPARATOR.'config.php';
-
-if (is_file($config)) {
-	require_once($config);
-}
-require_once(DIR_SYSTEM . 'startup.php');
+require_once('/var/www/istylespb/data/www/istylespb.ru/config.php');
+require_once('/var/www/istylespb/data/www/istylespb.ru/system/startup.php');
 
 class getInfo {
     protected $tasks;

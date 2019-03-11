@@ -26,13 +26,9 @@ ini_set('error_reporting', E_ALL);
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 
-$config = dirname(dirname(__FILE__)).DIRECTORY_SEPARATOR.'config.php';
-
-if (is_file($config)) {
-    require_once($config);
-}
-require_once(DIR_SYSTEM . 'startup.php');
-require_once DIR_SYSTEM . '/sheet.php';
+require_once('/var/www/istylespb/data/www/istylespb.ru/config.php');
+require_once('/var/www/istylespb/data/www/istylespb.ru/system/startup.php');
+require_once('/var/www/istylespb/data/www/istylespb.ru/system/sheet.php');
 
 //проверка работающих тасков
 if(checkTaskActive()) exit;
@@ -159,7 +155,7 @@ function db(){
 
 function startTask() {
     $db = db();
-    $query = $db->query("INSERT INTO " . DB_PREFIX . "script_tasks (status,date_start) VALUES (1,CURRENT_TIME())");
+    $query = $db->query("INSERT INTO " . DB_PREFIX . "script_tasks (type,status,date_start) VALUES (1,1,CURRENT_TIME())");
     return $db->getLastId();
 }
 
