@@ -13,12 +13,12 @@ class ControllerCheckoutSuccess extends Controller {
 			$this->cart->clear();
 
                         $session_data = array(
-                            "telephone"         => $this->session->data['simple']['customer']['telephone'],
-                            "email"             => $this->session->data['simple']['customer']['email'],
-                            "comment"           => $this->session->data['simple']['comment'],
-                            "firstname"         => $this->session->data['simple']['shipping_address']['firstname'],
+                            "telephone"            => $this->session->data['simple']['customer']['telephone'],
+                            "email"                => $this->session->data['simple']['customer']['email'],
+                            "comment"              => $this->session->data['simple']['comment'],
+                            "firstname"            => $this->session->data['simple']['shipping_address']['firstname'],
                             "shipping_address_1"   => $this->session->data['simple']['shipping_address']['address_1'],
-                            "shipping"          => $this->session->data['shipping_method']['title'],
+                            "shipping"             => $this->session->data['shipping_method']['title'],
                         );
 			            //для запуска в фоне
                         $params = array(
