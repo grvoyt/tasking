@@ -18,6 +18,9 @@ if(md5('istylespb.ru') !== $params['token']) die('token_denied');
 //таймаут запуска
 if(isset($params['time'])) sleep( (int)$params['time'] );
 
+//тип запуска
+$type = isset($params['type']) ? $params['type'] : 1;
+
 //для sheets 
 $_SERVER['DOCUMENT_ROOT'] = '/var/www/istylespb/data/www/istylespb.ru';
 
@@ -155,7 +158,7 @@ function db(){
 
 function startTask() {
     $db = db();
-    $query = $db->query("INSERT INTO " . DB_PREFIX . "script_tasks (type,status,date_start) VALUES (1,1,CURRENT_TIME())");
+    $query = $db->query("INSERT INTO " . DB_PREFIX . "script_tasks (type,status,date_start) VALUES (".$type.",1,CURRENT_TIME())");
     return $db->getLastId();
 }
 

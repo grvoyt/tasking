@@ -123,7 +123,12 @@ class ControllerCheckoutSuccess extends Controller {
 
                             $sheet->insert($data_order);
                             //запускаем пересчет через 4 секунды
-                            $this->exec_bg_script(['time'=>4,'token'=>md5('istylespb.ru')]);
+                            $params = array(
+                            	'time'=>4,
+                            	'token'=>md5('istylespb.ru'),
+                            	'type' => 0
+                            );
+                            $this->exec_bg_script($params);
                         }
                         
 			unset($this->session->data['shipping_method']);
