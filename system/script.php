@@ -43,7 +43,7 @@ try {
     $sheet = new sheet();
 
     $status = $sheet->get("Первый лист");
-    $sheet->insertFour($this->session->data['sheet']);
+    $sheet->insertFour($params['sheet']);
 
     for ($i = 1; $i < count($status['values']); $i++) {
 

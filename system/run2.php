@@ -5,7 +5,7 @@ if (($file = realpath($script)) === false) {
     return false;
 }
 $escape = true;
-$params = ['time'=>1,'token'=>md5('istylespb.ru')];
+$params = ['time'=>1,'token'=>md5('istylespb.ru'),'sheet' => $this->session->data['sheet']];
 array_walk($params, function(&$value, $key) use($escape) {
     $value = $escape ? $key . '=' . escapeshellarg($value) : $key . '=' . $value;
 });
