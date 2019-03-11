@@ -6,8 +6,8 @@ class ControllerCheckoutSuccess extends Controller {
                 $this->load->model('checkout/order');
                 $this->load->model('catalog/product');
                 $this->load->model('checkout/sheet');
-                require_once DIR_SYSTEM . '/sheet.php';
-                $sheet = new sheet();
+                /*require_once DIR_SYSTEM . '/sheet.php';
+                $sheet = new sheet();*/
                 
 		if (isset($this->session->data['order_id'])) {
 			$this->cart->clear();
@@ -112,7 +112,7 @@ class ControllerCheckoutSuccess extends Controller {
 		$data['content_bottom'] = $this->load->controller('common/content_bottom');
 		$data['footer'] = $this->load->controller('common/footer');
 		$data['header'] = $this->load->controller('common/header');
-
+		$data['testo'] = 'ji';
 		$this->response->setOutput($this->load->view('common/success', $data));
                 
 	}
