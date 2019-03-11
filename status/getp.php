@@ -1,2 +1,2 @@
 <?php
-echo system('ps aux | grep script.php');
+echo system('ps aux | grep php');

@@ -148,7 +148,7 @@ function endTask($taskId) {
 }
 
 function errorToFile($file) {
-    $error_file = dirname(__FILE__).DIRECTORY_SEPARATOR.'log.txt';
+    $error_file = '/var/www/istylespb/data/www/istylespb.ru/status/log.txt';
     $msg = date('d/m/Y H:i').":".json_encode($file).PHP_EOL;
     file_put_contents($error_file,$msg,FILE_APPEND);
 }

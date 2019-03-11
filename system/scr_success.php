@@ -32,6 +32,8 @@ if(isset($params['time'])) sleep( (int)$params['time'] );
 
 if(isset($params['other'])) {
 	$session = json_decode($params['other'],true);
+} else {
+    die;
 }
 
 //проверка работающих тасков и ожидание

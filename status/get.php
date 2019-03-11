@@ -9,7 +9,7 @@ require_once('/var/www/istylespb/data/www/istylespb.ru/system/startup.php');
 class getInfo {
     protected $tasks;
     protected $status = ['успешно','в процессе','ошибка'];
-    protected $types = ['auto','client'];
+    protected $types = ['Автоматический','Ручной запуск'];
     public function __construct()
     {
         return $this;
