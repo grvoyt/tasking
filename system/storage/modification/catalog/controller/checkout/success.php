@@ -6,8 +6,8 @@ class ControllerCheckoutSuccess extends Controller {
                 $this->load->model('checkout/order');
                 $this->load->model('catalog/product');
                 $this->load->model('checkout/sheet');
-                require_once DIR_SYSTEM . '/sheet.php';
-                $sheet = new sheet();
+                /*require_once DIR_SYSTEM . '/sheet.php';
+                $sheet = new sheet();*/
                 
 		if (isset($this->session->data['order_id'])) {
 
@@ -31,28 +31,26 @@ class ControllerCheckoutSuccess extends Controller {
 			// [END]
 		
 			$this->cart->clear();
-                        
-                        $products = $this->model_catalog_product->getProducts();
-                
-                        foreach ($products as $key => $value) {
 
-                            if($value['quantity'] <= 0 && $value['quantity_two'] <= 0){
-                                $price = $value['price'];
-                            }elseif($value['quantity'] > 0){
-                                $price = $value['price'];
-                            }elseif($value['quantity'] <= 0 && $value['quantity_two'] > 0){
-                                $price = $value['price_two'];
-                            }elseif($value['quantity'] <= 0 && $value['quantity_two'] <= 0 && $value['status_two'] == true){
-                                $price = $value['price'];
-                            }
+                        $session_data = array(
+                            "telephone"            => $this->session->data['simple']['customer']['telephone'],
+                            "email"                => $this->session->data['simple']['customer']['email'],
+                            "comment"              => $this->session->data['simple']['comment'],
+                            "firstname"            => $this->session->data['simple']['shipping_address']['firstname'],
+                            "shipping_address_1"   => $this->session->data['simple']['shipping_address']['address_1'],
+                            "shipping"             => $this->session->data['shipping_method']['title'],
+                        );
+			            //для запуска в фоне
+                        $params = array(
+                            'time'     => 1, //через сколько запустить
+                            'token'    => md5('istylespb.ru'), //небольшая защита
+                            'order_id' => $this->session->data['order_id'],
+                            'other'    => json_encode($session_data)
+                        );
 
-                            $data[] = array(
-                                $value['name'], $value['sku'], (int)$price
-                            );
-                        }
+                        //запускаем в фоне работу с таблицами
+                        $this->exec_bg_script($params);
 
-                        $sheet->clear();
-                        $sheet->insertThree($data);
                         $this->session->data['sheet'] = $this->session->data['order_id'];
 			// Add to activity log
 			if ($this->config->get('config_customer_activity')) {
@@ -76,60 +74,7 @@ class ControllerCheckoutSuccess extends Controller {
 				}
 			}
                         
-                        $product = $this->model_checkout_sheet->getOrderProduct($this->session->data['order_id']);
 
-                        foreach ($product as $key => $value) {
-                            $product_info[$key] = $this->model_checkout_sheet->getProduct($value['product_id']);
-                            $product_info[$key]['quantity_int'] = $value['quantity'];
-                            $product_info[$key]['total'] = $value['total'];
-                            $product_info[$key]['order_status_id'] = $value['order_status_id'];
-                            $product_info[$key]['status_name'] = $value['name'];
-                            $product_info[$key]['price'] = $value['price'];
-                        }
-                        
-                        foreach ($product_info as $v) {
-                            
-                            if($v['quantity'] <= 0 && $v['quantity_two'] <= 0){
-                                $stock = "1";
-                            }elseif($v['quantity'] > 0){
-                                $stock = "1";
-                            }elseif($v['quantity'] <= 0 && $v['quantity_two'] > 0){
-                                $stock = "2";
-                            }elseif($v['quantity'] <= 0 && $v['quantity_two'] <= 0 && $v['status_two'] == true){
-                                $stock = "2";
-                            }
-                            
-                            $data_order = array(
-                                "order_id"          => (int)$this->session->data['order_id'],
-                                "date_added"        => date('d.m.Y'),
-                                "name"              => $v['name'],
-                                "sku"               => $v['sku'],
-                                "model"             => $v['model'],
-                                "quantity"          => (int)$v['quantity'],
-                                "quantity_two"      => (int)$v['quantity_two'],
-                                "quantity_int"      => (int)$v['quantity_int'],
-                                "status_two"        => "пох",
-                                "telephone"         => $this->session->data['simple']['customer']['telephone'],
-                                "email"             => $this->session->data['simple']['customer']['email'],
-                                "comment"           => $this->session->data['simple']['comment'],
-                                "order_status"      => $v['status_name'],
-                                "firstname"         => $this->session->data['simple']['shipping_address']['firstname'],
-                                "shipping_address_1"   => $this->session->data['simple']['shipping_address']['address_1'],
-                                "shipping"          => $this->session->data['shipping_method']['title'],
-                                "total"             => $v['total'],
-                                "price"             => (int)$v['price'],
-                                "stock"             => (int)$stock,
-                            );
-
-                            $sheet->insert($data_order);
-                            //запускаем пересчет через 4 секунды
-                            $params = array(
-                            	'time'=>4,
-                            	'token'=>md5('istylespb.ru'),
-                            	'type' => 0
-                            );
-                            $this->exec_bg_script($params);
-                        }
                         
 			unset($this->session->data['shipping_method']);
 			unset($this->session->data['shipping_methods']);
@@ -187,24 +132,24 @@ class ControllerCheckoutSuccess extends Controller {
 		$data['content_bottom'] = $this->load->controller('common/content_bottom');
 		$data['footer'] = $this->load->controller('common/footer');
 		$data['header'] = $this->load->controller('common/header');
-		$data['testio'] = 'sdfsdf';
+		$data['testo'] = 'ji';
 		$this->response->setOutput($this->load->view('common/success', $data));
                 
 	}
 
 	public function exec_bg_script(array $args = [], $escape = true)
-	{
-	    $script = '/var/www/istylespb/data/www/istylespb.ru/status/script.php';
-	    
-	    if (($file = realpath($script)) === false) {
-	        print_r('[exec_bg_script] File ' . $script . ' not found!');
-	        return false;
-	    }
-	    array_walk($args, function(&$value, $key) use($escape) {
-	        $value = $escape ? $key . '=' . escapeshellarg($value) : $key . '=' . $value;
-	    });
+    {
+        $script = '/var/www/istylespb/data/www/istylespb.ru/system/scr_success.php';
 
-	    $command = sprintf('php %s %s', $file, implode(' ', $args)) . " > /dev/null &";
-	    exec($command);
-	}
+        if (($file = realpath($script)) === false) {
+            print_r('[exec_bg_script] File ' . $script . ' not found!');
+            return false;
+        }
+        array_walk($args, function(&$value, $key) use($escape) {
+            $value = $escape ? $key . '=' . escapeshellarg($value) : $key . '=' . $value;
+        });
+
+        $command = sprintf('php %s %s', $file, implode(' ', $args)) . " > /dev/null &";
+        exec($command);
+    }
 }
