@@ -140,9 +140,10 @@ class ControllerCheckoutSuccess extends Controller {
 	public function exec_bg_script(array $args = [], $escape = true)
     {
         $script = '/var/www/istylespb/data/www/istylespb.ru/system/scr_success.php';
+        $log = '/var/www/istylespb/data/www/istylespb.ru/status/log.txt';
 
         if (($file = realpath($script)) === false) {
-            print_r('[exec_bg_script] File ' . $script . ' not found!');
+        	file_put_contents($log, '[exec_bg_script] File ' . $script . ' not found!', FILE_APPEND);
             return false;
         }
         array_walk($args, function(&$value, $key) use($escape) {

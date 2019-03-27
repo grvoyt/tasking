@@ -87,7 +87,10 @@ class ControllerCommonFooter extends Controller {
 		$data['wishlist'] = $this->url->link('account/wishlist', '', true);
 		$data['newsletter'] = $this->url->link('account/newsletter', '', true);
         $data['sheet'] = isset($this->session->data['sheet']) ? true : false;
-        $data['powered'] = sprintf($this->language->get('text_powered'), $this->config->get('config_name'), date('Y', time())).$this->language->get('theme_powered');
+                
+		
+				
+				$data['powered'] = sprintf($this->language->get('text_powered'), $this->config->get('config_name'), date('Y', time())).$this->language->get('theme_powered');
       
 
 		// Whos Online
@@ -119,8 +122,9 @@ class ControllerCommonFooter extends Controller {
 	}
         
         public function updateTable(){
-            ignore_user_abort(true);/*
-            if($this->request->post['res']){
+            ignore_user_abort(true);
+            var_dump('jel');
+            /*if($this->request->post['res']){
                 require_once DIR_SYSTEM . '/run2.php';
             }*/
             unset($this->session->data['sheet']);
