@@ -74,9 +74,20 @@ function exec_bg_script($script, array $args = [], $escape = true)
         </div>
         <div class="row">
             <div class="col-12">
-                <div id="tbody2">
-                    
-                </div>
+                <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th scope="col">id</th>
+                        <th scope="col">Статус</th>
+                        <th scope="col">Тип</th>
+                        <th scope="col">Текст Ошибки</th>
+                        <th scope="col">Время начала</th>
+                        <th scope="col">Время конца</th>
+                    </tr>
+                </thead>
+                <tbody id="tbody2">
+                </tbody>
+                </table>
             </div>
         </div>
     </div>
@@ -112,19 +123,15 @@ function render(res) {
         var textError = it.error ? it.error : '';
         var date_start = new Date(it.date_start);
         date_start.setHours(date_start.getHours()+2);
-
-        html += '<div class="card mb-3 '+classError+'">'
-          +'<h3 class="card-header">Task '+it.id+'</h3>'
-          +'<div class="card-body">'
-            +'<h5 class="card-title ">Статус: <span class="text-'+errorLabel+'">'+status[it.status]+'</span></h5>'
-            +'<p class="card-text">Тип: '+type[it.type]+'</p>'
-          +'<p class="card-text">'+textError+'</p>'
-            +'</div>'
-          +'<ul class="list-group list-group-flush">'
-            +'<li class="list-group-item">Время запуска: '+date_start.toLocaleString()+'</li>'
-            +'<li class="list-group-item">Обновлено: '+currTime+'</li>'
-          +'</ul>'
-          +'</div>';
+        var date_end = !it.date_end ? '' : new Date(it.date_end);
+        if(date_end!=='') date_end.setHours(date_end.getHours()+2);
+        html += '<tr class="'+classError+'"><th scope="row">'+it.id+'</th>'
+            +'<td>'+status[it.status]+'</td>'
+            +'<td class="text-'+errorLabel+'">'+type[it.type]+'</td>'
+            +'<td>'+textError+'</td>'
+            +'<td>'+date_start.toLocaleString()+'</td>'
+            +'<td>'+date_end.toLocaleString()+'</td>'
+            +'</tr>';
     });
     var tabBody = res.history ? '#tbody2' : '#tbody';
     $(tabBody).empty().append(html);

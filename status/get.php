@@ -23,7 +23,7 @@ class getInfo {
 	    return $this;
 	}public function getHistory() {
 		$db = $this->getDB();
-		$query = $db->query("SELECT * FROM `oc_script_tasks` WHERE date_start >= CURRENT_DATE()");
+		$query = $db->query("SELECT * FROM " . DB_PREFIX . "script_tasks WHERE date_start >= CURRENT_DATE() ORDER BY date_start DESC");
 		$this->tasks = $query->rows;
 		$this->history = 1;
 	    return $this;
@@ -54,7 +54,7 @@ class getInfo {
     }
 }
 
-if($_SERVER['REQUEST_METHOD'] == 'GET' && $_GET['history']) {
+if($_SERVER['REQUEST_METHOD'] == 'GET' && isset($_GET['history']) ) {
 	$tasks = new getInfo();
 	echo $tasks->getHistory()->toJson();
 }else {

@@ -169,7 +169,7 @@ function db(){
 
 function startTask() {
     $db = db();
-    $query = $db->query("INSERT INTO " . DB_PREFIX . "script_tasks (type,status,date_start) VALUES (".(int)$type.",1,CURRENT_TIME())");
+    $query = $db->query("INSERT INTO " . DB_PREFIX . "script_tasks (type,status,date_start) VALUES (1,1,CURRENT_TIME())");
     return $db->getLastId();
 }
 
