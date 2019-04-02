@@ -74,7 +74,7 @@ function exec_bg_script($script, array $args = [], $escape = true)
         </div>
         <div class="row">
             <div class="col-12">
-                <div id="tbody">
+                <div id="tbody2">
                     
                 </div>
             </div>
@@ -89,48 +89,56 @@ function exec_bg_script($script, array $args = [], $escape = true)
 <script>
 $(document).on('click','.alert .close', function() {$(this).parent().fadeOut().remove()});
 
+$.ajax({
+    url:'/status/get.php?history=1&time='+Date.now(),
+    type:'get',
+    success: render
+})
+
+function render(res) {
+    if(res.tasks && res.tasks.length ==0) {
+        clearInterval(timer);
+        $('#tbody').empty();
+        showMessage('Импорт завершен','alert-success');
+        return false;
+    }
+    var status = res.status;
+    var type = res.types;
+    var html = '';
+    var currTime = new Date().toLocaleString();
+    res.tasks.forEach(function(it) {
+        var classError = (it.status == 2) ? 'border-danger' : '';
+        var errorLabel = (it.status == 2) ? 'danger' : 'success';
+        var textError = it.error ? it.error : '';
+        var date_start = new Date(it.date_start);
+        date_start.setHours(date_start.getHours()+2);
+
+        html += '<div class="card mb-3 '+classError+'">'
+          +'<h3 class="card-header">Task '+it.id+'</h3>'
+          +'<div class="card-body">'
+            +'<h5 class="card-title ">Статус: <span class="text-'+errorLabel+'">'+status[it.status]+'</span></h5>'
+            +'<p class="card-text">Тип: '+type[it.type]+'</p>'
+          +'<p class="card-text">'+textError+'</p>'
+            +'</div>'
+          +'<ul class="list-group list-group-flush">'
+            +'<li class="list-group-item">Время запуска: '+date_start.toLocaleString()+'</li>'
+            +'<li class="list-group-item">Обновлено: '+currTime+'</li>'
+          +'</ul>'
+          +'</div>';
+    });
+    var tabBody = res.history ? '#tbody2' : '#tbody';
+    $(tabBody).empty().append(html);
+    showMessage('Обновлено');
+}
+
 var checkStatus = function() {
     $.ajax({
         url: '',
         type:'post',
-        success: function(res) {
-            if(res.tasks && res.tasks.length ==0) {
-                clearInterval(timer);
-                $('#tbody').empty();
-                showMessage('Импорт завершен','alert-success');
-                return false;
-            }
-            var status = res.status;
-            var type = res.types;
-            var html = '';
-            var currTime = new Date().toLocaleString();
-            res.tasks.forEach(function(it) {
-                var classError = (it.status == 2) ? 'border-danger' : '';
-                var errorLabel = (it.status == 2) ? 'danger' : 'success';
-                var textError = it.error ? it.error : '';
-                var date_start = new Date(it.date_start);
-                date_start.setHours(date_start.getHours()+2);
-
-                html += '<div class="card mb-3 '+classError+'">'
-                  +'<h3 class="card-header">Task '+it.id+'</h3>'
-                  +'<div class="card-body">'
-                    +'<h5 class="card-title ">Статус: <span class="text-'+errorLabel+'">'+status[it.status]+'</span></h5>'
-                    +'<p class="card-text">Тип: '+type[it.type]+'</p>'
-                  +'<p class="card-text">'+textError+'</p>'
-                    +'</div>'
-                  +'<ul class="list-group list-group-flush">'
-                    +'<li class="list-group-item">Время запуска: '+date_start.toLocaleString()+'</li>'
-                    +'<li class="list-group-item">Обновлено: '+currTime+'</li>'
-                  +'</ul>'
-                  +'</div>';
-            });
-            $('#tbody').empty().append(html);
-            showMessage('Обновлено');
-        }
+        success: render
     })
-    
-
 }
+
 checkStatus();
 var timer = setInterval(checkStatus,15*1000);
 

@@ -10,6 +10,7 @@ class getInfo {
     protected $tasks;
     protected $status = ['успешно','в процессе','ошибка'];
     protected $types = ['Автоматический','Ручной запуск'];
+    protected $history = 0;
     public function __construct()
     {
         return $this;
@@ -19,6 +20,12 @@ class getInfo {
 		$db = $this->getDB();
 	    $query = $db->query("SELECT * FROM " . DB_PREFIX . "script_tasks WHERE status > 0");
 	    $this->tasks = $query->rows;
+	    return $this;
+	}public function getHistory() {
+		$db = $this->getDB();
+		$query = $db->query("SELECT * FROM `oc_script_tasks` WHERE date_start >= CURRENT_DATE()");
+		$this->tasks = $query->rows;
+		$this->history = 1;
 	    return $this;
 	}
 
@@ -47,7 +54,10 @@ class getInfo {
     }
 }
 
-if($_SERVER['REQUEST_METHOD'] == 'GET') {
-    $tasks = new getInfo();
+if($_SERVER['REQUEST_METHOD'] == 'GET' && $_GET['history']) {
+	$tasks = new getInfo();
+	echo $tasks->getHistory()->toJson();
+}else {
+	$tasks = new getInfo();
     echo $tasks->getTasks()->toJson();
 }
