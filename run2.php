@@ -140,8 +140,8 @@ function render(res) {
 
 var checkStatus = function() {
     $.ajax({
-        url: '',
-        type:'post',
+        url:'/status/get.php?history=1&time='+Date.now(),
+        type:'get',
         success: render
     })
 }
