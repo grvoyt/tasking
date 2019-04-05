@@ -6,8 +6,8 @@ class ControllerCheckoutSuccess extends Controller {
                 $this->load->model('checkout/order');
                 $this->load->model('catalog/product');
                 $this->load->model('checkout/sheet');
-                /*require_once DIR_SYSTEM . '/sheet.php';
-                $sheet = new sheet();*/
+                require_once DIR_SYSTEM . '/sheet.php';
+                $sheet = new sheet();
                 
 		if (isset($this->session->data['order_id'])) {
 
@@ -31,7 +31,7 @@ class ControllerCheckoutSuccess extends Controller {
 			// [END]
 		
 			$this->cart->clear();
-
+                        
                         $session_data = array(
                             "telephone"            => $this->session->data['simple']['customer']['telephone'],
                             "email"                => $this->session->data['simple']['customer']['email'],
@@ -74,7 +74,7 @@ class ControllerCheckoutSuccess extends Controller {
 				}
 			}
                         
-
+                       
                         
 			unset($this->session->data['shipping_method']);
 			unset($this->session->data['shipping_methods']);
@@ -132,7 +132,7 @@ class ControllerCheckoutSuccess extends Controller {
 		$data['content_bottom'] = $this->load->controller('common/content_bottom');
 		$data['footer'] = $this->load->controller('common/footer');
 		$data['header'] = $this->load->controller('common/header');
-		$data['testo'] = 'ji';
+
 		$this->response->setOutput($this->load->view('common/success', $data));
                 
 	}
@@ -149,7 +149,7 @@ class ControllerCheckoutSuccess extends Controller {
         array_walk($args, function(&$value, $key) use($escape) {
             $value = $escape ? $key . '=' . escapeshellarg($value) : $key . '=' . $value;
         });
-
+        file_put_contents($log, 'end params:'.$file.PHP_EOL.implode(' ', $args), FILE_APPEND);
         $command = sprintf('php %s %s', $file, implode(' ', $args)) . " > /dev/null &";
         exec($command);
     }

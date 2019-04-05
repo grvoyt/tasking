@@ -246,13 +246,13 @@ class ConfigDuble {
 	}
 }
 
-class Task() {
+class Task {
 	protected static function getDB() {
 		return new db(DB_DRIVER, DB_HOSTNAME, DB_USERNAME, DB_PASSWORD, DB_DATABASE, DB_PORT, DB_PREFIX);
 	}
 	public static function startTask() {
 		$db = self::getDB();
-	    $query = $db->query("INSERT INTO " . DB_PREFIX . "script_tasks (status,date_start,type) VALUES (1,CURRENT_TIME(),1)");
+	    $query = $db->query("INSERT INTO " . DB_PREFIX . "script_tasks (status,date_start,type) VALUES (1,CURRENT_TIME(),0)");
 	    return $db->getLastId();
 	}
 	public static function errorTask($taskId, array $error=[],$file) {
