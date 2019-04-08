@@ -80,9 +80,9 @@ function exec_bg_script($script, array $args = [], $escape = true)
                         <th scope="col">id</th>
                         <th scope="col">Статус</th>
                         <th scope="col">Тип</th>
-                        <th scope="col">Текст Ошибки</th>
                         <th scope="col">Время начала</th>
                         <th scope="col">Время конца</th>
+                        <th scope="col">Текст Ошибки</th>
                     </tr>
                 </thead>
                 <tbody id="tbody2">
@@ -128,9 +128,9 @@ function render(res) {
         html += '<tr class="'+classError+'"><th scope="row">'+it.id+'</th>'
             +'<td>'+status[it.status]+'</td>'
             +'<td class="text-'+errorLabel+'">'+type[it.type]+'</td>'
-            +'<td>'+textError+'</td>'
             +'<td>'+date_start.toLocaleString()+'</td>'
             +'<td>'+date_end.toLocaleString()+'</td>'
+            +'<td>'+textError+'</td>'
             +'</tr>';
     });
     var tabBody = res.history ? '#tbody2' : '#tbody';

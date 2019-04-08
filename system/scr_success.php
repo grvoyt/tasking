@@ -160,7 +160,7 @@ try {
     die;
 }
 
-sleep(120);
+sleep(60);
 
 //этап 3
 try {
