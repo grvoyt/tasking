@@ -122,9 +122,9 @@ function render(res) {
         var errorLabel = (it.status == 2) ? 'danger' : 'success';
         var textError = it.error ? it.error : '';
         var date_start = new Date(it.date_start);
-        date_start.setHours(date_start.getHours()+2);
+        date_start.setHours(date_start.getHours()+1);
         var date_end = !it.date_end ? '' : new Date(it.date_end);
-        if(date_end!=='') date_end.setHours(date_end.getHours()+2);
+        if(date_end!=='') date_end.setHours(date_end.getHours()+1);
         html += '<tr class="'+classError+'"><th scope="row">'+it.id+'</th>'
             +'<td>'+status[it.status]+'</td>'
             +'<td class="text-'+errorLabel+'">'+type[it.type]+'</td>'
