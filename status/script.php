@@ -21,6 +21,8 @@ if(isset($params['time'])) sleep( (int)$params['time'] );
 //тип запуска
 $type = isset($params['type']) ? $params['type'] : 1;
 
+//checker
+$check = isset($params['check']) ? 1 : 0;
 
 //лог
 errorToFile(['msg'=>'scr:init','params' => $params]);
@@ -38,17 +40,18 @@ require_once('/var/www/istylespb/data/www/istylespb.ru/system/startup.php');
 require_once('/var/www/istylespb/data/www/istylespb.ru/system/sheet.php');
 
 //проверка работающих тасков
-if($type) {
-    if(checkTaskActive()) exit;
-} else {
+if($check) {
     while(checkTaskActive()) {
         sleep(29);
     }
+} else {
+    if(checkTaskActive()) exit;
 }
-errorToFile(['msg'=>'scr:started','params' => $params]);
-//Пишем таск в БД
-$taskId = startTask();
 
+errorToFile(['msg'=>'scr:started','params' => $params]);
+
+//Пишем таск в БД
+$taskId = startTask($check,$type);
 
 // этап 1
 try {
@@ -167,10 +170,16 @@ function db(){
     return $db = new db(DB_DRIVER, DB_HOSTNAME, DB_USERNAME, DB_PASSWORD, DB_DATABASE, DB_PORT, DB_PREFIX);
 }
 
-function startTask() {
-    $db = db();
-    $query = $db->query("INSERT INTO " . DB_PREFIX . "script_tasks (type,status,date_start) VALUES (1,1,CURRENT_TIME())");
-    return $db->getLastId();
+function startTask($check=0,$type=0) {
+    try {
+        $db = db();
+        $query = $db->query("INSERT INTO " . DB_PREFIX . "script_tasks (`check`,type,status,date_start) VALUES (".$check.",".$type.",1,CURRENT_TIME())");
+        return $db->getLastId(); 
+    }catch(Exception $e) {
+        errorTask('Task not started',[$e->getLine(),$e->getFile(),$e->getMessage()],$e->getTrace());
+        die;
+    }
+    
 }
 
 function errorTask($taskId, array $error=[],$file) {

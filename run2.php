@@ -9,9 +9,25 @@ if( isset($_SERVER['HTTP_X_REQUESTED_WITH']) && !empty($_SERVER['HTTP_X_REQUESTE
 //сам запуск скрипта
 $message = '';
 if($_SERVER['REQUEST_METHOD'] == 'POST') {
-    exec_bg_script('status/script.php', ['time'=>1,'token'=>md5('istylespb.ru'), 'type' => 1]);
+    $params = [
+        'time'=>1,
+        'token'=>md5('istylespb.ru'),
+        'type' => 1,
+    ];
+
+    if(isset($_POST['check'])){
+        $params['type'] = 2;
+        $params['check'] = $_POST['check'];
+    }
+    exec_bg_script('status/script.php', $params);
     $message = 'Скрипт запущен';
-    header('Location: https://istylespb.ru/run2.php');
+    if(isset($_POST['check'])) {
+        header('Content-Type: application/json');
+        header('Status: 200');
+        die(json_encode(['status' => 1]));
+    } else {
+        header('Location: https://istylespb.ru/run2.php');
+    }
 }
 //
 

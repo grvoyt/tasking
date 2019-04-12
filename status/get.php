@@ -9,7 +9,7 @@ require_once('/var/www/istylespb/data/www/istylespb.ru/system/startup.php');
 class getInfo {
     protected $tasks;
     protected $status = ['успешно','в процессе','ошибка'];
-    protected $types = ['Автоматический','Ручной запуск'];
+    protected $types = ['Автоматический','Ручной запуск','Парсер'];
     protected $history = 0;
     public function __construct()
     {
@@ -18,7 +18,7 @@ class getInfo {
 
 	public function getTasks() {
 		$db = $this->getDB();
-	    $query = $db->query("SELECT * FROM " . DB_PREFIX . "script_tasks WHERE status > 0");
+	    $query = $db->query("SELECT * FROM " . DB_PREFIX . "script_tasks WHERE `check` = 1");
 	    $this->tasks = $query->rows;
 	    return $this;
 	}public function getHistory() {
